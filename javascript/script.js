@@ -1,3 +1,14 @@
+const CATEGORIES = [
+    { name: "technology", color: "#3b82f6" },
+    { name: "science", color: "#16a34a" },
+    { name: "finance", color: "#ef4444" },
+    { name: "society", color: "#eab308" },
+    { name: "entertainment", color: "#db2777" },
+    { name: "health", color: "#14b8a6" },
+    { name: "history", color: "#f97316" },
+    { name: "news", color: "#8b5cf6" },
+  ];
+
 const initialFacts = [
     {
       id: 1,
@@ -43,7 +54,6 @@ factsList.innerHTML = "";
 /********* Load data from Supabase ***** */
 async function loadFacts() {
 
-
 const res = await fetch("https://hrutybarskaiueqncuyo.supabase.co/rest/v1/facts", {
     headers:{
         apikey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhydXR5YmFyc2thaXVlcW5jdXlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODMyNjg0NzcsImV4cCI6MTk5ODg0NDQ3N30.VTJIH6NzOKVj5eXODhp_f1jjFdX8W-zE2o7elYQHs0g",
@@ -52,6 +62,8 @@ const res = await fetch("https://hrutybarskaiueqncuyo.supabase.co/rest/v1/facts"
     },
 });
 const data = await res.json();
+//  console.log(data);
+//const filteredData = data.filter((fact)=> fact.category === "technology");
 createFactsList(data);
 }
  loadFacts();
@@ -65,16 +77,13 @@ function createFactsList(dataArray) {
     ${fact.text}
     <a class="source" href="${fact.source}" target="_blank">(source)</a>
     </p>
-    <span class="tag" style="background-color:#3b82f6">${fact.category}</span>
+    <span class="tag" style="background-color:${CATEGORIES.find((cat) => cat.name === fact.category).color}">${fact.category}</span>
     
     </li>`);
-    console.log(htmlArr);
     const html = htmlArr.join("");
     factsList.insertAdjacentHTML("afterbegin", html);
 
 }
-
-
 
 /****** Toggle form visiblity *******/
 btn.addEventListener("click", function() {
