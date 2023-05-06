@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import supabase from "./supabase";
 import "./style.css";
 const CATEGORIES = [
   { name: "technology", color: "#3b82f6" },
@@ -60,7 +61,18 @@ function Counter() {
 function App() {
   // Define state variable
   const [showForm, setShowForm] = useState(false)
-  const [facts, setFacts] = useState(initialFacts);
+  const [facts, setFacts] = useState([]);
+ useEffect(function(){
+
+async function getFacts() {
+  const { data: facts, error } = await supabase
+  .from('facts')
+  .select('*');
+  console.log(facts);
+  setFacts(facts);
+}
+getFacts();
+ }, []);
 
   return (
     <>
@@ -143,7 +155,6 @@ function NewFactForm(props) {
   //6. close the form
   setShowForm(false);
   }
-    
   }
 
   return (
