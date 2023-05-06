@@ -62,10 +62,11 @@ const res = await fetch("https://hrutybarskaiueqncuyo.supabase.co/rest/v1/facts"
     },
 });
 const data = await res.json();
-//  console.log(data);
+ console.log(data);
 //const filteredData = data.filter((fact)=> fact.category === "technology");
 createFactsList(data);
 }
+
  loadFacts();
 
 //createFactsList(initialFacts);
