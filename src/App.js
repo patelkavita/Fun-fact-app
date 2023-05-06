@@ -78,6 +78,8 @@ function App() {
 );
 }
 
+
+
 function Header(props) {
   const {showForm, setShowForm} = props;
   const appTitle = "Today I Learned..";
@@ -109,8 +111,8 @@ function isValidHttpUrl(string) {
 function NewFactForm(props) {
   const {setFacts, setShowForm} = props;
   const [text, setText] = useState("");
-  const [source, setSource] = useState("http://example.com");
-  const [category, setCategory] = useState("Choose Category:");
+  const [source, setSource] = useState("");
+  const [category, setCategory] = useState("");
   const textLength = text.length;
 
   function handleSubmit(e) {
