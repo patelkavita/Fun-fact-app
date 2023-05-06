@@ -100,7 +100,7 @@ getFacts();
 
 <main className="main">
   <CategoryFilter setCurrentCategory = {setCurrentCategory}/>
-  {isLoading ? <Loader /> : <FactList facts={facts} />}
+  {isLoading ? <Loader /> : <FactList facts={facts} setFacts = {setFacts} />}
 </main>
 </>
 );
@@ -174,7 +174,9 @@ function NewFactForm(props) {
 
   //4. add the new fact to the user interface
 
-  setFacts((facts)=>[newFact[0], ...facts]);
+  if(!error) {
+    setFacts((facts) => [newFact[0], ...facts]);
+  }
   //5. reset the input field
   setText("");
   setSource("");
@@ -227,7 +229,7 @@ function CategoryFilter(props) {
 }
 
 function FactList(props) {
- const {facts} = props;
+ const {facts, setFacts} = props;
 
  if(facts.length === 0) {
   return <p className="message">No Facts for this category yet!. Create the first one✌️</p>
@@ -236,7 +238,7 @@ function FactList(props) {
   return ( <section> <ul className="facts-list">  {
     facts.map((fact) => (
       
-      <Fact key={fact.id} factObj={fact}/>
+      <Fact key={fact.id} factObj={fact} setFacts = {setFacts}/>
     ))}
     </ul>
     <p>There are {facts.length} facts in the database. Add your own!</p>
@@ -245,7 +247,19 @@ function FactList(props) {
 }
 
 function Fact(props) {
-  const {factObj} = props;
+  const {factObj, setFacts} = props;
+  const [isUpdating, setIsUpdating] = useState(false);
+
+ async function handleVote() {
+  setIsUpdating(true)
+  const {data: updatedFact, error} = await supabase.from("facts").update({votesForInteresting: factObj.votesForInteresting + 1}).eq("id", factObj.id)
+    .select();
+setIsUpdating(false);
+
+    if(!error) {
+      setFacts((facts) => facts.map((f) => f.id=== factObj.id ? updatedFact[0]: f))
+    }
+  }
   return (
     <li className="fact" >
       <p>
@@ -256,9 +270,9 @@ function Fact(props) {
         {factObj.category}
         </span>
        <div  className="vote-buttons"> 
-         <button>👍 {factObj.votesInteresting}</button>
-         <button>🤯 {factObj.votesMindblowing}</button>
-         <button>⛔️ {factObj.votesFalse}</button>
+         <button onClick={handleVote} disabled = {isUpdating}>👍 {factObj.votesForInteresting}</button>
+         <button>🤯 {factObj.votesForMindblowing}</button>
+         <button>⛔️ {factObj.votesForFalse}</button>
        </div>
    </li>
   )

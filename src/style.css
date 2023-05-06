@@ -184,6 +184,10 @@ ul{
 background-color: #292524;
 }
 
+.fact .vote-buttons button:disabled{
+    background-color: #44403c;
+}
+
 .fact .vote-buttons button{
     background-color: #78716e;
     border: none;
