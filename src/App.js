@@ -60,18 +60,19 @@ function Counter() {
 function App() {
   // Define state variable
   const [showForm, setShowForm] = useState(false)
-  
+  const [facts, setFacts] = useState(initialFacts);
+
   return (
     <>
 <Header showForm= {showForm} setShowForm = {setShowForm}/> 
 <Counter />
 
 {/* Use state variable */}
-{showForm ? <NewFactForm /> : null }
+{showForm ? <NewFactForm setFacts={setFacts} /> : null }
 
 <main className="main">
 <CategoryFilter />
-<FactList />
+<FactList facts= {facts}/>
 </main>
 </>
 );
@@ -105,7 +106,8 @@ function isValidHttpUrl(string) {
   return url.protocol === "http:" || url.protocol === "https:";
 }
 
-function NewFactForm() {
+function NewFactForm(props) {
+  const {setFacts} = props;
   const [text, setText] = useState("");
   const [source, setSource] = useState("");
   const [category, setCategory] = useState("");
@@ -117,7 +119,8 @@ function NewFactForm() {
   //2. if the data is valid, if so, create a new fact obj
   
   if(text && isValidHttpUrl(source) && category && text.length <= 300) {
-  //3. create a new fact object
+  console.log(text, source, category);
+    //3. create a new fact object
   const newFact = {
     id: Math.floor(Math.random() * 10),
     text,
@@ -126,13 +129,17 @@ function NewFactForm() {
     votesInteresting: 0,
     votesMindblowing: 0,
     votesFalse: 0,
-    createdIn: new Date().getCurrentYear(),
+    createdIn: new Date().getFullYear(),
   }
   //4. add the new fact to the user interface
+
+  setFacts((facts)=>[newFact, ...facts]);
   //5. reset the input field
+  setText("");
+  setSource("");
+  setCategory("");
   //6. close the form
   }
-    
     
   }
 
@@ -177,9 +184,9 @@ function CategoryFilter() {
   )
 }
 
-function FactList() {
-  //temporary
-  const facts = initialFacts;
+function FactList(props) {
+ const {facts} = props;
+
   return ( <section> <ul className="facts-list">  {
     facts.map((fact) => (
       
