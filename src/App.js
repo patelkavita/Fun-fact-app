@@ -144,9 +144,10 @@ function NewFactForm(props) {
   const [text, setText] = useState("");
   const [source, setSource] = useState("");
   const [category, setCategory] = useState("");
+  const [isUploading, setIsUploading] = useState(false);
   const textLength = text.length;
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
   //1. prevent default, (browser reload)
   e.preventDefault();
   //2. if the data is valid, if so, create a new fact obj
@@ -154,19 +155,26 @@ function NewFactForm(props) {
   if(text && isValidHttpUrl(source) && category && text.length <= 300) {
   console.log(text, source, category);
     //3. create a new fact object
-  const newFact = {
-    id: Math.floor(Math.random() * 10),
-    text,
-    source,
-    category,
-    votesInteresting: 0,
-    votesMindblowing: 0,
-    votesFalse: 0,
-    createdIn: new Date().getFullYear(),
-  }
+  // const newFact = {
+  //   id: Math.floor(Math.random() * 10),
+  //   text,
+  //   source,
+  //   category,
+  //   votesInteresting: 0,
+  //   votesMindblowing: 0,
+  //   votesFalse: 0,
+  //   createdIn: new Date().getFullYear(),
+  // }
+  //3. Upload fact to supabase and recieve new fact object
+  setIsUploading(true);
+   const {data:newFact, error} = await supabase.from("facts")
+   .insert([{text, source, category}])
+   .select();
+   setIsUploading(false);
+
   //4. add the new fact to the user interface
 
-  setFacts((facts)=>[newFact, ...facts]);
+  setFacts((facts)=>[newFact[0], ...facts]);
   //5. reset the input field
   setText("");
   setSource("");
@@ -185,16 +193,16 @@ function NewFactForm(props) {
 
     <input type="text" id="" placeholder="Trustworty source.."
     value = {source}
-    onChange = {(e) => setSource(e.target.value)}/>
+    onChange = {(e) => setSource(e.target.value)} disabled = {isUploading}/>
 
-    <select value = {category} onChange={(e) => setCategory(e.target.value)}>
+    <select value = {category} onChange={(e) => setCategory(e.target.value)} disabled = {isUploading}>
     {/* <option value="">Choose category:</option> */}
       {CATEGORIES.map((cat) => (<option key = {cat.name} value = {cat.name}>
         {cat.name.toUpperCase()}
       </option>))}
       
     </select>
-    <button className="btn btn-large">Post</button>
+    <button className="btn btn-large" disabled={isUploading}>Post</button>
   </form>
   );
 }
@@ -220,7 +228,7 @@ function CategoryFilter(props) {
 
 function FactList(props) {
  const {facts} = props;
- 
+
  if(facts.length === 0) {
   return <p className="message">No Facts for this category yet!. Create the first one✌️</p>
  }
