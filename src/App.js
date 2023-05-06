@@ -68,7 +68,7 @@ function App() {
 <Counter />
 
 {/* Use state variable */}
-{showForm ? <NewFactForm setFacts={setFacts} /> : null }
+{showForm ? <NewFactForm setFacts={setFacts} setShowForm={setShowForm}/> : null }
 
 <main className="main">
 <CategoryFilter />
@@ -107,10 +107,10 @@ function isValidHttpUrl(string) {
 }
 
 function NewFactForm(props) {
-  const {setFacts} = props;
+  const {setFacts, setShowForm} = props;
   const [text, setText] = useState("");
-  const [source, setSource] = useState("");
-  const [category, setCategory] = useState("");
+  const [source, setSource] = useState("http://example.com");
+  const [category, setCategory] = useState("Choose Category:");
   const textLength = text.length;
 
   function handleSubmit(e) {
@@ -139,6 +139,7 @@ function NewFactForm(props) {
   setSource("");
   setCategory("");
   //6. close the form
+  setShowForm(false);
   }
     
   }
