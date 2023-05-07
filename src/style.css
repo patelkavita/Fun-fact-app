@@ -201,6 +201,10 @@ background-color: #292524;
     transition: 0.3s;
 }
 
+.disputed{
+    color: rgba(240, 43, 43, 0.849);
+    font-weight: 600;
+}
 /**************** Media Queries ************/
 @media (max-width: 1200px) {
     .fact{

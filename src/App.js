@@ -154,18 +154,7 @@ function NewFactForm(props) {
   
   if(text && isValidHttpUrl(source) && category && text.length <= 300) {
   console.log(text, source, category);
-    //3. create a new fact object
-  // const newFact = {
-  //   id: Math.floor(Math.random() * 10),
-  //   text,
-  //   source,
-  //   category,
-  //   votesInteresting: 0,
-  //   votesMindblowing: 0,
-  //   votesFalse: 0,
-  //   createdIn: new Date().getFullYear(),
-  // }
-  //3. Upload fact to supabase and recieve new fact object
+
   setIsUploading(true);
    const {data:newFact, error} = await supabase.from("facts")
    .insert([{text, source, category}])
@@ -249,7 +238,8 @@ function FactList(props) {
 function Fact(props) {
   const {factObj, setFacts} = props;
   const [isUpdating, setIsUpdating] = useState(false);
-
+  const ifIsDisputed = factObj.votesForInteresting + factObj.votesForMindblowing < factObj.votesForFalse;
+  
  async function handleVote(columnName) {
   setIsUpdating(true)
   const {data: updatedFact, error} = await supabase.from("facts").update({[columnName]: factObj[columnName] + 1}).eq("id", factObj.id)
@@ -263,6 +253,7 @@ setIsUpdating(false);
   return (
     <li className="fact" >
       <p>
+       {ifIsDisputed ? <span className="disputed">[⛔️ DISPUTED] </span> : null}
       {factObj.text}
        <a href={factObj.source} target="_blank" className="source">(source)</a>
        </p>
